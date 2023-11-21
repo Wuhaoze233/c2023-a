@@ -6,8 +6,7 @@ void move_letter(char letter, float speed) {
     int direction = 1;  // 1表示向右移动，-1表示向左移动
 
     while (1) {
-        // 清空控制台输出
-        printf("\033c");
+        // 清空控制台输出printf("\033c");
 
         // 输出字母前的空格
         for (int i = 0; i < position; ++i) {

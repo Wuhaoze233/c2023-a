@@ -55,25 +55,27 @@ struct Node* reverseLinkedList(struct Node* head) {
 }
 
 // 查找值为5的节点
-int findNode(struct Node* head, int target) {
+int findNode(struct Node* head, int target,int *index) {
     struct Node* current = head;
-    int index = 0;
 
     while (current != NULL) {
         if (current->value == target) {
-            return index;
+            return (*index);
         }
 
         current = current->next;
-        index++;
+        (*index)++;
     }
 
     return -1;
 }
 
 int main() {
-    int arr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int arr[] = {1, 2, 3, 4, 4, 6, 6, 8, 9};
     int size = sizeof(arr) / sizeof(arr[0]);
+    int a = 0;
+    int *index;
+    index = &a;
 
     struct Node* head = createLinkedList(arr, size);
 
@@ -85,11 +87,11 @@ int main() {
     printf("Reversed Linked List: ");
     traverseLinkedList(head);
 
-    int firstIndex = findNode(head, 5);
-    printf("First occurrence of 5 at index: %d\n", firstIndex);
+    int firstIndex = findNode(head, 5,index);
+    printf("First occurrence of 5 at index: %d\n", firstIndex+1);
 
-    int secondIndex = findNode(head, 5);
-    printf("Second occurrence of 5 at index: %d\n", secondIndex);
-
+    int secondIndex = findNode(head, 5,index);
+    printf("Second occurrence of 5 at index: %d\n", secondIndex+1);
+    free(head);
     return 0;
 }
