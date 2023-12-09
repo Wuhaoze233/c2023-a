@@ -14,7 +14,7 @@ void decrypt_1(char input[n],int key)
 int main(){
     char input[1000];
     int key;
-    int judging = NULL;
+    int judging;
     printf("Please input the sentence you wanna encrypt or decrypt:\n");
     gets(input);
     printf("Please input your key:\n");
