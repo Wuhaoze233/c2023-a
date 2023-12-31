@@ -10,7 +10,7 @@
 class Game {
 public:
     struct Node_Tree{
-        int flag,cnt,score=1,depth,result=0,number=0,Alpha=-100000000,Beta=+100000000;
+        int self,cnt,score=1,depth,result=0,number=0,Alpha=-100000000,Beta=+100000000;
         int VmBoard[16][16];
         struct Node_Tree* son[100];
         COORD site[100];
@@ -21,7 +21,7 @@ public:
     COORD waitPos;
     std::string atk[4]={""};
     int chessboard[16][16] = {0};
-    int flag = -1;
+    int self = -1;
     const int step = 30;
 
     void printboard();
@@ -38,7 +38,7 @@ public:
 
     void printstart();
 
-    void Attack(int x,int y,int flag,int Vmboard[16][16],int ScoreBoard[16][16]);
+    void Attack(int x,int y,int self,int Vmboard[16][16],int ScoreBoard[16][16]);
 
     int AllScore(Node_Tree *p);
 
