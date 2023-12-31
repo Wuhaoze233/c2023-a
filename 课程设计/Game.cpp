@@ -1,7 +1,7 @@
 //
 // Created by 81524 on 2023/12/25.
 //
-#include <graphics.h>// 引用 EasyX 图形库
+#include <graphics.h>
 #include <iostream>
 #include "Game.h"
 #include <conio.h>
@@ -168,11 +168,8 @@ bool Game::chessjudge(int y,int x,int board[16][16]) {
 }
 
 void Game::printend() {
-    //获取窗口句柄
     HWND hnd = GetHWnd();
-    //设置窗口标题
     SetWindowText(hnd, "GoBang Game");
-    //弹出窗口，提示用户操作
     int is_ok;
     if (flag==-1) {
         is_ok = MessageBox(hnd, "Black Win!", "Game Over", MB_OK);
@@ -183,16 +180,12 @@ void Game::printend() {
 }
 
 void Game::printstart() {
-    //获取窗口句柄
     HWND hnd = GetHWnd();
-    //设置窗口标题
     SetWindowText(hnd, "GoBang Game");
-    //弹出窗口，提示用户操作
     int is_first;
     is_first=MessageBox(hnd, "You Fisrt?", "Game Start", MB_YESNO);
     if (is_first==IDNO) {
         chessboard[8][8] = 1;
-        /*flag *= -1;*/
         while (true) {
             printboard();
             printchess();
@@ -242,7 +235,6 @@ void Game::Attack(int y,int x,int flag,int Vmboard[16][16],int ScoreBoard[16][16
         int tmp=Vmboard[y][i];
         if (flag==tmp){
             count++;
-            /*cout<<cross->count<<'\t';*/
         }
         else if (tmp==-flag){
             block++;
@@ -465,8 +457,6 @@ void Game::Attack(int y,int x,int flag,int Vmboard[16][16],int ScoreBoard[16][16
 }
 
 int Game::AllScore(Node_Tree *p) {
-    clock_t start, finish;
-    start = clock();
     int score = 0;
     int NumDash = 0;
     string array[100];
@@ -486,7 +476,6 @@ int Game::AllScore(Node_Tree *p) {
     }
     array[61] = "0";
     array[31] = "0";
-    //black
     string five[10] = {"22222", "1222211", "1122221"};//活五活四
     string four[10] = {"022221", "122220", "22212", "22122", "21222"};//冲四
     string three[10] = {"122211", "112221", "121221", "122121"};//活三
@@ -494,7 +483,6 @@ int Game::AllScore(Node_Tree *p) {
                           "0122210"};//眠三
     string LiveTwo[10] = {"112211", "12121", "121121"};//活二
     string SleepTwo[10] = {"022111", "111220", "021211", "112120", "021121", "121120", "21112"};//眠二
-    //white
     string Wfive[10] = {"00000", "1000011", "1100001"};//活五活四
     string Wfour[10] = {"200001", "100002", "00010", "00100", "01000"};//冲四
     string Wthree[10] = {"100011", "110001", "101001", "100101"};//活三
@@ -574,11 +562,835 @@ int Game::AllScore(Node_Tree *p) {
     } else if (NumDash != 0) {
         score += NumDash * 1010;
     }
-    finish = clock();
-    x+=(double)(finish - start) / CLOCKS_PER_SEC;
     return score;
 }
-
+/*V1版本全局评估函数
+ * inline int analyzeTransverse(int self,int board[19][19]){
+    int score = 0;
+    for(int cycle1 = 1;cycle1 < 19;cycle1++){
+        for(int cycle2 = 1;cycle2 < 19;cycle2++){
+            if (board[cycle1][cycle2] == self){
+                if (board[cycle1][cycle2 - 1] == 0){
+                    if (board[cycle1][cycle2 + 1] == self){
+                        if (board[cycle1][cycle2 + 2] == self){
+                            if (board[cycle1][cycle2 + 3] == self){
+                                if (board[cycle1][cycle2 + 4] == self){
+                                    score = score + 1000000;
+                                    cycle2 = cycle2 + 4;
+                                    continue;
+                                }
+                                else if(board[cycle1][cycle2 + 4] == 0){
+                                    score = score + 10000;
+                                    cycle2 = cycle2 + 4;
+                                    continue;
+                                }
+                                else if(board[cycle1][cycle2 + 4] == -self){
+                                    score = score + 1000;
+                                    cycle2 = cycle2 + 4;
+                                    continue;
+                                }
+                            }
+                            else if(board[cycle1][cycle2 + 3] == 0) {
+                                score = score + 1000;
+                                cycle2 = cycle2 + 3;
+                                continue;
+                            }
+                            else if(board[cycle1][cycle2 + 3] == -self){
+                                score = score + 100;
+                                cycle2 = cycle2 + 3;
+                                continue;
+                            }
+                        }
+                        else if(board[cycle1][cycle2 + 2] == 0){
+                            score = score + 100;
+                            cycle2 = cycle2 + 2;
+                            continue;
+                        }
+                        else if(board[cycle1][cycle2 + 2] == -self){
+                            score = score + 10;
+                            cycle2 = cycle2 + 2;
+                            continue;
+                        }
+                    }
+                    else if(board[cycle1][cycle2 + 1] == 0){
+                        score = score + 10;
+                        cycle2 = cycle2 + 1;
+                        continue;
+                    }
+                    else if(board[cycle1][cycle2 + 1] == -self){
+                        score = score + 1;
+                        cycle2 = cycle2 + 1;
+                        continue;
+                    }
+                }
+                else if(board[cycle1][cycle2 - 1] == -self){
+                    if (board[cycle1][cycle2 + 1] == self){
+                        if (board[cycle1][cycle2 + 2] == self) {
+                            if (board[cycle1][cycle2 + 3] == self) {
+                                if (board[cycle1][cycle2 + 4] == self) {
+                                    score = score + 1000000;
+                                    cycle2 = cycle2 + 4;
+                                    continue;
+                                } else if (board[cycle1][cycle2 + 4] == 0) {
+                                    score = score + 1000;
+                                    cycle2 = cycle2 + 4;
+                                    continue;
+                                } else if (board[cycle1][cycle2 + 4] == -self) {
+                                    cycle2 = cycle2 + 4;
+                                    continue;
+                                }
+                            }
+                            else if(board[cycle1][cycle2 + 3] == 0){
+                                score = score + 100;
+                                cycle2 = cycle2 + 3;
+                                continue;
+                            }
+                            else if(board[cycle1][cycle2 + 3] == -self){
+                                cycle2 = cycle2 + 3;
+                                continue;
+                            }
+                        }
+                        else if(board[cycle1][cycle2 + 2] == 0){
+                            score = score + 10;
+                            cycle2 = cycle2 + 2;
+                            continue;
+                        }
+                        else if(board[cycle1][cycle2 + 2] == -self){
+                            cycle2 = cycle2 + 2;
+                            continue;
+                        }
+                    }
+                    else if(board[cycle1][cycle2 + 1] == 0){
+                        score = score + 1;
+                        cycle2 = cycle2 + 1;
+                        continue;
+                        }
+                    else if (board[cycle1][cycle2 + 1] == -self){
+                        cycle2 = cycle2 + 1;
+                        continue;
+                    }
+                }
+            }
+        }
+    }
+    return score;
+}
+inline int analyzeVertical(int self,int board[19][19]){
+    int score = 0;
+    for(int cycle2 = 1;cycle2 < 19;cycle2++){
+        for(int cycle1 = 1;cycle1 < 19;cycle1++){
+            if (board[cycle1][cycle2] == self){
+                if (board[cycle1 - 1][cycle2] == 0 ){
+                    if (board[cycle1 + 1][cycle2] == self){
+                        if (board[cycle1 + 2][cycle2] == self){
+                            if (board[cycle1 + 3][cycle2] == self){
+                                if (board[cycle1 + 4][cycle2] == self){
+                                    score = score + 1000000;
+                                    cycle1 = cycle1 + 4;
+                                    continue;
+                                }
+                                else if(board[cycle1 + 4][cycle2] == 0){
+                                    score = score + 10000;
+                                    cycle1 = cycle1 + 4;
+                                    continue;
+                                }
+                                else if(board[cycle1 + 4][cycle2] == -self){
+                                    score = score + 1000;
+                                    cycle1 = cycle1 + 4;
+                                    continue;
+                                }
+                            }
+                            else if(board[cycle1 + 3][cycle2] == 0) {
+                                score = score + 1000;
+                                cycle1 = cycle1 + 3;
+                                continue;
+                            }
+                            else if(board[cycle1 + 3][cycle2] == -self){
+                                score = score + 100;
+                                cycle1 = cycle1 + 3;
+                                continue;
+                            }
+                        }
+                        else if(board[cycle1 + 2][cycle2] == 0){
+                            score = score + 100;
+                            cycle1 = cycle1 + 2;
+                            continue;
+                        }
+                        else if(board[cycle1 + 2][cycle2] == -self){
+                            score = score + 10;
+                            cycle1 = cycle1 + 2;
+                            continue;
+                        }
+                    }
+                    else if(board[cycle1 + 1][cycle2] == 0){
+                        score = score + 10;
+                        cycle1 = cycle1 + 1;
+                        continue;
+                    }
+                    else if(board[cycle1 + 1][cycle2] == -self){
+                        score = score + 1;
+                        cycle1 = cycle1 + 1;
+                        continue;
+                    }
+                }
+                else if(board[cycle1 - 1][cycle2] == -self){
+                    if (board[cycle1 + 1][cycle2] == self){
+                        if (board[cycle1 + 2][cycle2] == self) {
+                            if (board[cycle1 + 3][cycle2] == self) {
+                                if (board[cycle1 + 4][cycle2] == self) {
+                                    score = score + 1000000;
+                                    cycle1 = cycle1 + 4;
+                                    continue;
+                                } else if (board[cycle1 + 4][cycle2] == 0) {
+                                    score = score + 1000;
+                                    cycle1 = cycle1 + 4;
+                                    continue;
+                                } else if (board[cycle1 + 4][cycle2] == -self) {
+                                    cycle1 = cycle1 + 4;
+                                    continue;
+                                }
+                            }
+                            else if(board[cycle1 + 3][cycle2] == 0){
+                                score = score + 100;
+                                cycle1 = cycle1 + 3;
+                                continue;
+                            }
+                            else if(board[cycle1 + 3][cycle2] == -self) {
+                                cycle1 = cycle1 + 3;
+                                continue;
+                            }
+                        }
+                        else if(board[cycle1 + 2][cycle2] == 0){
+                            score = score + 10;
+                            cycle1 = cycle1 + 2;
+                            continue;
+                        }
+                        else if(board[cycle1 + 2][cycle2] == -self){
+                            cycle1 = cycle1 + 2;
+                            continue;
+                        }
+                    }
+                    else if(board[cycle1 + 1][cycle2] == 0) {
+                        score = score + 1;
+                        cycle1 = cycle1 + 1;
+                        continue;
+                    }
+                    else if(board[cycle1 + 1][cycle2] == -self) {
+                        cycle1 = cycle1 + 1;
+                        continue;
+                    }
+                }
+            }
+        }
+    }
+    return score;
+}
+inline int analyzeSlantLeft(int self,int board[19][19]){
+    int score = 0;
+    for (int a = 0;a < 19;a++) {
+        for (int b = 0; b < 19 - a; b++) {
+            if (board[a + b][b] == self) {
+                if (board[a + b - 1][b - 1] == 0) {
+                    if (board[a + b + 1][b + 1] == self) {
+                        if (board[a + b + 2][b + 2] == self) {
+                            if (board[a + b + 3][b + 3] == self) {
+                                if (board[a + b + 4][b + 4] == self) {
+                                    score = score + 1000000;
+                                    b = b + 4;
+                                    continue;
+                                }
+                                else if (board[a + b + 4][b + 4] == 0) {
+                                    score = score + 10000;
+                                    b = b + 4;
+                                    continue;
+                                }
+                                else if (board[a + b + 4][b + 4] == -self) {
+                                    score = score + 1000;
+                                    b = b + 4;
+                                    continue;
+                                }
+                            }
+                            else if(board[a + b + 3][b + 3] == 0){
+                                score = score + 1000;
+                                b = b + 3;
+                                continue;
+                            }
+                            else if(board[a + b + 3][b + 3] == -self){
+                                score = score + 100;
+                                b = b + 3;
+                                continue;
+                            }
+                        }
+                        else if(board[a + b + 2][b + 2] == 0){
+                            score = score + 100;
+                            b = b + 2;
+                            continue;
+                        }
+                        else if(board[a + b + 2][b + 2] == -self){
+                            score = score + 10;
+                            b = b + 2;
+                            continue;
+                        }
+                    }
+                    else if(board[a + b + 1][b + 1] == 0){
+                        score = score + 10;
+                        b = b + 1;
+                        continue;
+                    }
+                    else if (board[a + b + 1][b + 1] == -self){
+                        b = b + 1;
+                        continue;
+                    }
+                }
+                else if(board[a + b - 1][b - 1] == -self){
+                    if(board[a + b + 1][b + 1] == self){
+                        if(board[a + b + 2][b + 2] == self) {
+                            if (board[a + b + 3][b + 3] == self) {
+                                if (board[a + b + 4][b + 4] == self) {
+                                    score = score + 1000000;
+                                    b = b + 4;
+                                    continue;
+                                } else if (board[a + b + 4][b + 4] == 0) {
+                                    score = score + 1000;
+                                    b = b + 4;
+                                    continue;
+                                } else if (board[a + b + 4][b + 4] == -self) {
+                                    b = b + 4;
+                                    continue;
+                                }
+                            } else if (board[a + b + 3][b + 3] == 0) {
+                                score = score + 100;
+                                b = b + 3;
+                                continue;
+                            } else if (board[a + b + 3][b + 3] == -self) {
+                                b = b + 3;
+                                continue;
+                            }
+                        }
+                        else if(board[a + b + 2][b + 2] == 0){
+                            score = score + 10;
+                            b = b + 2;
+                            continue;
+                        }
+                        else if(board[a + b + 2][b + 2] == -self){
+                            b = b + 2;
+                            continue;
+                        }
+                    }
+                    else if(board[a + b + 1][b + 1] == 0){
+                        score = score + 1;
+                        b = b + 1;
+                        continue;
+                    }
+                    else if(board[a + b + 1][b + 1] == -self){
+                        b = b + 1;
+                        continue;
+                    }
+                }
+            }
+        }
+    }
+    for (int a = 0;a < 19;a++) {
+        for (int b = 0; b < a; b++) {
+            if (board[b][a - b] == self) {
+                if (board[b - 1][a - b + 1] == 0) {
+                    if (board[b + 1][a - b - 1] == self) {
+                        if (board[b + 2][a - b - 2] == self) {
+                            if (board[b + 3][a - b - 3] == self) {
+                                if (board[b + 4][a - b - 4] == self) {
+                                    score = score + 1000000;
+                                    b = b + 4;
+                                    continue;
+                                }
+                                else if (board[b + 4][a - b - 4] == 0) {
+                                    score = score + 10000;
+                                    b = b + 4;
+                                    continue;
+                                }
+                                else if (board[b + 4][a - b - 4] == -self) {
+                                    score = score + 1000;
+                                    b = b + 4;
+                                    continue;
+                                }
+                            }
+                            else if(board[b + 3][a - b - 3] == 0){
+                                score = score + 1000;
+                                b = b + 3;
+                                continue;
+                            }
+                            else if(board[b + 3][a - b - 3] == -self){
+                                score = score + 100;
+                                b = b + 3;
+                                continue;
+                            }
+                        }
+                        else if(board[b + 2][a - b - 2] == 0){
+                            score = score + 100;
+                            b = b + 2;
+                            continue;
+                        }
+                        else if(board[b + 2][a - b - 2] == -self){
+                            score = score + 10;
+                            b = b + 2;
+                            continue;
+                        }
+                    }
+                    else if(board[b + 1][a - b - 1] == 0){
+                        score = score + 10;
+                        b = b + 1;
+                        continue;
+                    }
+                    else if (board[b + 1][a - b - 1] == -self){
+                        b = b + 1;
+                        continue;
+                    }
+                }
+                else if(board[b - 1][a - b + 1] == -self){
+                    if(board[b + 1][a - b - 1] == self){
+                        if(board[b + 2][a - b - 2] == self) {
+                            if (board[b + 3][a - b - 3] == self) {
+                                if (board[b + 4][a - b - 4] == self) {
+                                    score = score + 1000000;
+                                    b = b + 4;
+                                    continue;
+                                } else if (board[b + 4][a - b - 4] == 0) {
+                                    score = score + 1000;
+                                    b = b + 4;
+                                    continue;
+                                } else if (board[b + 4][a - b - 4] == -self) {
+                                    b = b + 4;
+                                    continue;
+                                }
+                            } else if (board[b + 3][a - b - 3] == 0) {
+                                score = score + 100;
+                                b = b + 3;
+                                continue;
+                            } else if (board[b + 3][a - b - 3] == -self) {
+                                b = b + 3;
+                                continue;
+                            }
+                        }
+                        else if(board[b + 2][a - b - 2] == 0){
+                            score = score + 10;
+                            b = b + 2;
+                            continue;
+                        }
+                        else if(board[b + 2][a - b - 2] == -self){
+                            b = b + 2;
+                            continue;
+                        }
+                    }
+                    else if(board[b + 1][a - b - 1] == 0){
+                        score = score + 1;
+                        b = b + 1;
+                        continue;
+                    }
+                    else if(board[b + 1][a - b - 1] == -self){
+                        b = b + 1;
+                        continue;
+                    }
+                }
+            }
+        }
+    }
+    int score_correct;
+    int a = 0;
+    for (int b = 0; b < 19 - a; b++) {
+        if (board[b][a + b] == self) {
+            if (board[b - 1][a + b - 1] == 0) {
+                if (board[b + 1][a + b + 1] == self) {
+                    if (board[b + 2][a + b + 2] == self) {
+                        if (board[b + 3][a + b + 3] == self) {
+                            if (board[b + 4][a + b + 4] == self) {
+                                score_correct = score_correct + 1000000;
+                                b = b + 4;
+                                continue;
+                            } else if (board[b + 4][a + b + 4] == 0) {
+                                score_correct = score_correct + 10000;
+                                b = b + 4;
+                                continue;
+                            } else if (board[b + 4][a + b + 4] == -self) {
+                                score_correct = score_correct + 1000;
+                                b = b + 4;
+                                continue;
+                            }
+                        } else if (board[b + 3][a + b + 3] == 0) {
+                            score_correct = score_correct + 1000;
+                            b = b + 3;
+                            continue;
+                        } else if (board[b + 3][a + b + 3] == -self) {
+                            score_correct = score_correct + 100;
+                            b = b + 3;
+                            continue;
+                        }
+                    } else if (board[b + 2][a + b + 2] == 0) {
+                        score_correct = score_correct + 100;
+                        b = b + 2;
+                        continue;
+                    } else if (board[b + 2][a + b + 2] == -self) {
+                        score_correct = score_correct + 10;
+                        b = b + 2;
+                        continue;
+                    }
+                } else if (board[b + 1][a + b + 1] == 0) {
+                    score_correct = score_correct + 10;
+                    b = b + 1;
+                    continue;
+                } else if (board[b + 1][a + b + 1] == -self) {
+                    b = b + 1;
+                    continue;
+                }
+            } else if (board[b - 1][a + b - 1] == -self) {
+                if (board[b + 1][a + b + 1] == self) {
+                    if (board[b + 2][a + b + 2] == self) {
+                        if (board[b + 3][a + b + 3] == self) {
+                            if (board[b + 4][a + b + 4] == self) {
+                                score_correct = score_correct + 1000000;
+                                b = b + 4;
+                                continue;
+                            } else if (board[b + 4][a + b + 4] == 0) {
+                                score_correct = score_correct + 1000;
+                                b = b + 4;
+                                continue;
+                            } else if (board[b + 4][a + b + 4] == -self) {
+                                b = b + 4;
+                                continue;
+                            }
+                        } else if (board[b + 3][a + b + 3] == 0) {
+                            score_correct = score_correct + 100;
+                            b = b + 3;
+                            continue;
+                        } else if (board[b + 3][a + b + 3] == -self) {
+                            b = b + 3;
+                            continue;
+                        }
+                    } else if (board[b + 2][a + b + 2] == 0) {
+                        score_correct = score_correct + 10;
+                        b = b + 2;
+                        continue;
+                    } else if (board[b + 2][a + b + 2] == -self) {
+                        b = b + 2;
+                        continue;
+                    }
+                } else if (board[b + 1][a + b + 1] == 0) {
+                    score_correct = score_correct + 1;
+                    b = b + 1;
+                    continue;
+                } else if (board[b + 1][a + b + 1] == -self) {
+                    b = b + 1;
+                    continue;
+                }
+            }
+        }
+    }
+    score = score - score_correct;
+    return score;
+}
+inline int analyzeSlantRight(int self,int board[19][19]){
+    int score = 0;
+    for (int a = 0;a < 19;a++) {
+        for (int b = 0; b < 19 - a; b++) {
+            if (board[a + b][b] == self) {
+                if (board[a + b - 1][b - 1] == 0) {
+                    if (board[a + b + 1][b + 1] == self) {
+                        if (board[a + b + 2][b + 2] == self) {
+                            if (board[a + b + 3][b + 3] == self) {
+                                if (board[a + b + 4][b + 4] == self) {
+                                    score = score + 1000000;
+                                    b = b + 4;
+                                    continue;
+                                }
+                                else if (board[a + b + 4][b + 4] == 0) {
+                                    score = score + 10000;
+                                    b = b + 4;
+                                    continue;
+                                }
+                                else if (board[a + b + 4][b + 4] == -self) {
+                                    score = score + 1000;
+                                    b = b + 4;
+                                    continue;
+                                }
+                            }
+                            else if(board[a + b + 3][b + 3] == 0){
+                                score = score + 1000;
+                                b = b + 3;
+                                continue;
+                            }
+                            else if(board[a + b + 3][b + 3] == -self){
+                                score = score + 100;
+                                b = b + 3;
+                                continue;
+                            }
+                        }
+                        else if(board[a + b + 2][b + 2] == 0){
+                            score = score + 100;
+                            b = b + 2;
+                            continue;
+                        }
+                        else if(board[a + b + 2][b + 2] == -self){
+                            score = score + 10;
+                            b = b + 2;
+                            continue;
+                        }
+                    }
+                    else if(board[a + b + 1][b + 1] == 0){
+                        score = score + 10;
+                        b = b + 1;
+                        continue;
+                    }
+                    else if (board[a + b + 1][b + 1] == -self){
+                        b = b + 1;
+                        continue;
+                    }
+                }
+                else if(board[a + b - 1][b - 1] == -self){
+                    if(board[a + b + 1][b + 1] == self){
+                        if(board[a + b + 2][b + 2] == self) {
+                            if (board[a + b + 3][b + 3] == self) {
+                                if (board[a + b + 4][b + 4] == self) {
+                                    score = score + 1000000;
+                                    b = b + 4;
+                                    continue;
+                                } else if (board[a + b + 4][b + 4] == 0) {
+                                    score = score + 1000;
+                                    b = b + 4;
+                                    continue;
+                                } else if (board[a + b + 4][b + 4] == -self) {
+                                    b = b + 4;
+                                    continue;
+                                }
+                            } else if (board[a + b + 3][b + 3] == 0) {
+                                score = score + 100;
+                                b = b + 3;
+                                continue;
+                            } else if (board[a + b + 3][b + 3] == -self) {
+                                b = b + 3;
+                                continue;
+                            }
+                        }
+                        else if(board[a + b + 2][b + 2] == 0){
+                            score = score + 10;
+                            b = b + 2;
+                            continue;
+                        }
+                        else if(board[a + b + 2][b + 2] == -self){
+                            b = b + 2;
+                            continue;
+                        }
+                    }
+                    else if(board[a + b + 1][b + 1] == 0){
+                        score = score + 1;
+                        b = b + 1;
+                        continue;
+                    }
+                    else if(board[a + b + 1][b + 1] == -self){
+                        b = b + 1;
+                        continue;
+                    }
+                }
+            }
+        }
+    }
+    for (int a = 0;a < 19;a++) {
+        for (int b = 0; b < a; b++) {
+            if (board[b][a - b] == self) {
+                if (board[b - 1][a - b + 1] == 0) {
+                    if (board[b + 1][a - b - 1] == self) {
+                        if (board[b + 2][a - b - 2] == self) {
+                            if (board[b + 3][a - b - 3] == self) {
+                                if (board[b + 4][a - b - 4] == self) {
+                                    score = score + 1000000;
+                                    b = b + 4;
+                                    continue;
+                                }
+                                else if (board[b + 4][a - b - 4] == 0) {
+                                    score = score + 10000;
+                                    b = b + 4;
+                                    continue;
+                                }
+                                else if (board[b + 4][a - b - 4] == -self) {
+                                    score = score + 1000;
+                                    b = b + 4;
+                                    continue;
+                                }
+                            }
+                            else if(board[b + 3][a - b - 3] == 0){
+                                score = score + 1000;
+                                b = b + 3;
+                                continue;
+                            }
+                            else if(board[b + 3][a - b - 3] == -self){
+                                score = score + 100;
+                                b = b + 3;
+                                continue;
+                            }
+                        }
+                        else if(board[b + 2][a - b - 2] == 0){
+                            score = score + 100;
+                            b = b + 2;
+                            continue;
+                        }
+                        else if(board[b + 2][a - b - 2] == -self){
+                            score = score + 10;
+                            b = b + 2;
+                            continue;
+                        }
+                    }
+                    else if(board[b + 1][a - b - 1] == 0){
+                        score = score + 10;
+                        b = b + 1;
+                        continue;
+                    }
+                    else if (board[b + 1][a - b - 1] == -self){
+                        b = b + 1;
+                        continue;
+                    }
+                }
+                else if(board[b - 1][a - b + 1] == -self){
+                    if(board[b + 1][a - b - 1] == self){
+                        if(board[b + 2][a - b - 2] == self) {
+                            if (board[b + 3][a - b - 3] == self) {
+                                if (board[b + 4][a - b - 4] == self) {
+                                    score = score + 1000000;
+                                    b = b + 4;
+                                    continue;
+                                } else if (board[b + 4][a - b - 4] == 0) {
+                                    score = score + 1000;
+                                    b = b + 4;
+                                    continue;
+                                } else if (board[b + 4][a - b - 4] == -self) {
+                                    b = b + 4;
+                                    continue;
+                                }
+                            } else if (board[b + 3][a - b - 3] == 0) {
+                                score = score + 100;
+                                b = b + 3;
+                                continue;
+                            } else if (board[b + 3][a - b - 3] == -self) {
+                                b = b + 3;
+                                continue;
+                            }
+                        }
+                        else if(board[b + 2][a - b - 2] == 0){
+                            score = score + 10;
+                            b = b + 2;
+                            continue;
+                        }
+                        else if(board[b + 2][a - b - 2] == -self){
+                            b = b + 2;
+                            continue;
+                        }
+                    }
+                    else if(board[b + 1][a - b - 1] == 0){
+                        score = score + 1;
+                        b = b + 1;
+                        continue;
+                    }
+                    else if(board[b + 1][a - b - 1] == -self){
+                        b = b + 1;
+                        continue;
+                    }
+                }
+            }
+        }
+    }
+    int score_correct;
+    int a = 0;
+    for (int b = 0; b < 19 - a; b++) {
+        if (board[b][a + b] == self) {
+            if (board[b - 1][a + b - 1] == 0) {
+                if (board[b + 1][a + b + 1] == self) {
+                    if (board[b + 2][a + b + 2] == self) {
+                        if (board[b + 3][a + b + 3] == self) {
+                            if (board[b + 4][a + b + 4] == self) {
+                                score_correct = score_correct + 1000000;
+                                b = b + 4;
+                                continue;
+                            } else if (board[b + 4][a + b + 4] == 0) {
+                                score_correct = score_correct + 10000;
+                                b = b + 4;
+                                continue;
+                            } else if (board[b + 4][a + b + 4] == -self) {
+                                score_correct = score_correct + 1000;
+                                b = b + 4;
+                                continue;
+                            }
+                        } else if (board[b + 3][a + b + 3] == 0) {
+                            score_correct = score_correct + 1000;
+                            b = b + 3;
+                            continue;
+                        } else if (board[b + 3][a + b + 3] == -self) {
+                            score_correct = score_correct + 100;
+                            b = b + 3;
+                            continue;
+                        }
+                    } else if (board[b + 2][a + b + 2] == 0) {
+                        score_correct = score_correct + 100;
+                        b = b + 2;
+                        continue;
+                    } else if (board[b + 2][a + b + 2] == -self) {
+                        score_correct = score_correct + 10;
+                        b = b + 2;
+                        continue;
+                    }
+                } else if (board[b + 1][a + b + 1] == 0) {
+                    score_correct = score_correct + 10;
+                    b = b + 1;
+                    continue;
+                } else if (board[b + 1][a + b + 1] == -self) {
+                    b = b + 1;
+                    continue;
+                }
+            } else if (board[b - 1][a + b - 1] == -self) {
+                if (board[b + 1][a + b + 1] == self) {
+                    if (board[b + 2][a + b + 2] == self) {
+                        if (board[b + 3][a + b + 3] == self) {
+                            if (board[b + 4][a + b + 4] == self) {
+                                score_correct = score_correct + 1000000;
+                                b = b + 4;
+                                continue;
+                            } else if (board[b + 4][a + b + 4] == 0) {
+                                score_correct = score_correct + 1000;
+                                b = b + 4;
+                                continue;
+                            } else if (board[b + 4][a + b + 4] == -self) {
+                                b = b + 4;
+                                continue;
+                            }
+                        } else if (board[b + 3][a + b + 3] == 0) {
+                            score_correct = score_correct + 100;
+                            b = b + 3;
+                            continue;
+                        } else if (board[b + 3][a + b + 3] == -self) {
+                            b = b + 3;
+                            continue;
+                        }
+                    } else if (board[b + 2][a + b + 2] == 0) {
+                        score_correct = score_correct + 10;
+                        b = b + 2;
+                        continue;
+                    } else if (board[b + 2][a + b + 2] == -self) {
+                        b = b + 2;
+                        continue;
+                    }
+                } else if (board[b + 1][a + b + 1] == 0) {
+                    score_correct = score_correct + 1;
+                    b = b + 1;
+                    continue;
+                } else if (board[b + 1][a + b + 1] == -self) {
+                    b = b + 1;
+                    continue;
+                }
+            }
+        }
+    }
+    score = score - score_correct;
+    return score;
+}
+inline int analyzeSum(int self,int board[19][19]){
+    return (analyzeTransverse(self, board) - analyzeTransverse(-self, board) + analyzeVertical(self, board) - analyzeVertical(-self, board) + analyzeSlantLeft(self, board) - analyzeSlantLeft(-self, board) + analyzeSlantRight(self, board) - analyzeSlantRight(-self, board));
+}
+ */
 Game::Node_Tree *Game::createroot() {
     Node_Tree *head = new Node_Tree;
     memcpy(head->VmBoard, chessboard, sizeof(chessboard));
@@ -620,8 +1432,6 @@ Game::Node_Tree *Game::createleaf(Node_Tree *p)  {
 }
 
 void Game::PrintScore(Node_Tree *p) {
-    clock_t start,finish;
-    start=clock();
     int scoreboard[16][16] = {0};
     int num=0;
     for (int i = 1; i <= 15; i++) {
@@ -638,7 +1448,6 @@ void Game::PrintScore(Node_Tree *p) {
     }
     f=1;
     if (p->depth>1)num=4;
-    finish = clock();
     p->number=num;
     for (int k=0;k<num;k++){
         int max = 0;
@@ -654,7 +1463,6 @@ void Game::PrintScore(Node_Tree *p) {
         }
         scoreboard[p->site[k].Y][p->site[k].X] = 0;
     }
-    x+=(double)(finish - start) / CLOCKS_PER_SEC;
 }
 
 Game::Node_Tree *Game::createlist(Game::Node_Tree *p) {
