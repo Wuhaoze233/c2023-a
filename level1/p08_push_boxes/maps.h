@@ -6,8 +6,8 @@
 #define C2023_CHALLENGE_MAP_TARGETS_H
 
 #endif //C2023_CHALLENGE_MAP_TARGETS_H
-const int N = 12;
-char map1[12][12] = {
+#define  N 12
+char map1[N][N] = {
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
