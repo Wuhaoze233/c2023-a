@@ -1,0 +1,3 @@
+C:/Users/81524/CLionProjects/TEST_GOBANG/cmake-build-debug/CMakeFiles/TEST_GOBANG.dir
+C:/Users/81524/CLionProjects/TEST_GOBANG/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/81524/CLionProjects/TEST_GOBANG/cmake-build-debug/CMakeFiles/rebuild_cache.dir
