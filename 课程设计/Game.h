@@ -11,7 +11,7 @@ class Game {
 public:
     struct Node_Tree{
         int self,cnt,score=1,depth,result=0,number=0,Alpha=-100000000,Beta=+100000000;
-        int VmBoard[16][16];
+        int board_tmp[16][16];
         struct Node_Tree* son[100];
         COORD site[100];
         Node_Tree *Last;
@@ -38,7 +38,7 @@ public:
 
     void printstart();
 
-    void Attack(int x,int y,int self,int Vmboard[16][16],int ScoreBoard[16][16]);
+    void Attack(int x,int y,int self,int board_tmp[16][16],int ScoreBoard[16][16]);
 
     int AllScore(Node_Tree *p);
 

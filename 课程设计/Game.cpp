@@ -223,7 +223,7 @@ void Game::printstart() {
     }
 }
 
-void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16]) {
+void Game::Attack(int y,int x,int self,int board_tmp[16][16],int ScoreBoard[16][16]) {
     int empty=0;
     int count=1;
     int block=0;
@@ -233,7 +233,7 @@ void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16
             block++;
             break;
         }
-        int tmp=Vmboard[y][i];
+        int tmp=board_tmp[y][i];
         if (self==tmp){
             count++;
         }
@@ -242,8 +242,8 @@ void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16
             break;
         }
         else {
-            if (Vmboard[y][i+1]==0||Vmboard[y][i+1]==-self||i+1>15){
-                while (Vmboard[y][i]!=-self&&i<=15&&able+empty+count<=6){
+            if (board_tmp[y][i+1]==0||board_tmp[y][i+1]==-self||i+1>15){
+                while (board_tmp[y][i]!=-self&&i<=15&&able+empty+count<=6){
                     able++;
                     i++;
                 }
@@ -259,7 +259,7 @@ void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16
             block++;
             break;
         }
-        int tmp=Vmboard[y][i];
+        int tmp=board_tmp[y][i];
         if (self==tmp){
             count++;
         }
@@ -268,8 +268,8 @@ void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16
             break;
         }
         else {
-            if (Vmboard[y][i-1]==0||Vmboard[y][i-1]==-self||i-1<1){
-                while (Vmboard[y][i]!=-self&&i>=1&&able+empty+count<=6){
+            if (board_tmp[y][i-1]==0||board_tmp[y][i-1]==-self||i-1<1){
+                while (board_tmp[y][i]!=-self&&i>=1&&able+empty+count<=6){
                     able++;
                     i--;
                 }
@@ -291,7 +291,7 @@ void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16
             block++;
             break;
         }
-        int tmp=Vmboard[i][x];
+        int tmp=board_tmp[i][x];
         if (self==tmp){
             count++;
         }
@@ -300,8 +300,8 @@ void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16
             break;
         }
         else {
-            if (Vmboard[i+1][x]==0||Vmboard[i+1][x]==-self||i+1>15){
-                while (Vmboard[i+1][x]!=-self&&i<=15&&able+empty+count<=6){
+            if (board_tmp[i+1][x]==0||board_tmp[i+1][x]==-self||i+1>15){
+                while (board_tmp[i+1][x]!=-self&&i<=15&&able+empty+count<=6){
                     able++;
                     i++;
                 }
@@ -317,7 +317,7 @@ void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16
             block++;
             break;
         }
-        int tmp=Vmboard[i][x];
+        int tmp=board_tmp[i][x];
         if (self==tmp){
             count++;
         }
@@ -326,8 +326,8 @@ void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16
             break;
         }
         else {
-            if (Vmboard[i-1][x]==0||Vmboard[i-1][x]==-self||i-1<1){
-                while (Vmboard[i-1][x]!=-self&&i>=1&&able+empty+count<=6){
+            if (board_tmp[i-1][x]==0||board_tmp[i-1][x]==-self||i-1<1){
+                while (board_tmp[i-1][x]!=-self&&i>=1&&able+empty+count<=6){
                     able++;
                     i--;
                 }
@@ -349,7 +349,7 @@ void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16
             block++;
             break;
         }
-        int tmp=Vmboard[i][j];
+        int tmp=board_tmp[i][j];
         if (self==tmp){
             count++;
         }
@@ -358,8 +358,8 @@ void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16
             break;
         }
         else {
-            if (Vmboard[i+1][j+1]==0||Vmboard[i+1][j+1]==-self||i+1>15||j+1>15){
-                while (Vmboard[i+1][j+1]!=-self&&i<=15&&j<=15&&able+empty+count<=6){
+            if (board_tmp[i+1][j+1]==0||board_tmp[i+1][j+1]==-self||i+1>15||j+1>15){
+                while (board_tmp[i+1][j+1]!=-self&&i<=15&&j<=15&&able+empty+count<=6){
                     able++;
                     i++;j++;
                 }
@@ -375,7 +375,7 @@ void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16
             block++;
             break;
         }
-        int tmp=Vmboard[i][j];
+        int tmp=board_tmp[i][j];
         if (self==tmp){
             count++;
         }
@@ -384,8 +384,8 @@ void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16
             break;
         }
         else {
-            if (Vmboard[i-1][j-1]==0||Vmboard[i-1][j-1]==-self||i-1<1||j-1<1){
-                while (Vmboard[i-1][j-1]!=-self&&i>=1&&j>=1&&able+empty+count<=6){
+            if (board_tmp[i-1][j-1]==0||board_tmp[i-1][j-1]==-self||i-1<1||j-1<1){
+                while (board_tmp[i-1][j-1]!=-self&&i>=1&&j>=1&&able+empty+count<=6){
                     able++;
                     i--;j--;
                 }
@@ -407,7 +407,7 @@ void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16
             block++;
             break;
         }
-        int tmp=Vmboard[i][j];
+        int tmp=board_tmp[i][j];
         if (self==tmp){
             count++;
         }
@@ -416,8 +416,8 @@ void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16
             break;
         }
         else {
-            if (Vmboard[i+1][j-1]==0||Vmboard[i+1][j-1]==-self||i+1>15||j-1<1){
-                while (Vmboard[i+1][j-1]!=-self&&i<=15&&j>=1&&able+empty+count<=6){
+            if (board_tmp[i+1][j-1]==0||board_tmp[i+1][j-1]==-self||i+1>15||j-1<1){
+                while (board_tmp[i+1][j-1]!=-self&&i<=15&&j>=1&&able+empty+count<=6){
                     able++;
                     i++;j--;
                 }
@@ -433,7 +433,7 @@ void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16
             block++;
             break;
         }
-        int tmp=Vmboard[i][j];
+        int tmp=board_tmp[i][j];
         if (self==tmp){
             count++;
         }
@@ -442,8 +442,8 @@ void Game::Attack(int y,int x,int self,int Vmboard[16][16],int ScoreBoard[16][16
             break;
         }
         else {
-            if (Vmboard[i-1][j+1]==0||Vmboard[i-1][j+1]==-self||i-1<1||j+1>15){
-                while (Vmboard[i-1][j+1]!=-self&&i>=1&&j<=15&&able+empty+count<=6){
+            if (board_tmp[i-1][j+1]==0||board_tmp[i-1][j+1]==-self||i-1<1||j+1>15){
+                while (board_tmp[i-1][j+1]!=-self&&i>=1&&j<=15&&able+empty+count<=6){
                     able++;
                     i--;j++;
                 }
@@ -463,16 +463,16 @@ int Game::AllScore(Node_Tree *p) {
     string array[100];
     for (int i = 1; i <= 15; i++) {
         for (int j = 1; j <= 15; j++) {
-            array[i] = array[i] + char(int(p->VmBoard[i][j] + 1) + '0');
-            array[i + 15] = array[i + 15] + char(int(p->VmBoard[j][i] + 1) + '0');
+            array[i] = array[i] + char(int(p->board_tmp[i][j] + 1) + '0');
+            array[i + 15] = array[i + 15] + char(int(p->board_tmp[j][i] + 1) + '0');
         }
     }
     for (int k = 1; k <= 15; k++) {
         for (int i = k, j = 1; i <= 15; ++i, ++j) {
-            array[k + 30] = array[k + 30] + char(int(p->VmBoard[i][j] + 1) + '0');
-            array[k + 45] = array[k + 45] + char(int(p->VmBoard[16 - i][j] + 1) + '0');
-            array[k + 60] = array[k + 60] + char(int(p->VmBoard[16 - j][i] + 1) + '0');
-            array[k + 75] = array[k + 75] + char(int(p->VmBoard[j][i] + 1) + '0');
+            array[k + 30] = array[k + 30] + char(int(p->board_tmp[i][j] + 1) + '0');
+            array[k + 45] = array[k + 45] + char(int(p->board_tmp[16 - i][j] + 1) + '0');
+            array[k + 60] = array[k + 60] + char(int(p->board_tmp[16 - j][i] + 1) + '0');
+            array[k + 75] = array[k + 75] + char(int(p->board_tmp[j][i] + 1) + '0');
         }
     }
     array[61] = "0";
@@ -1394,7 +1394,7 @@ inline int analyzeSum(int self,int board[19][19]){
  */
 Game::Node_Tree *Game::createroot() {
     Node_Tree *head = new Node_Tree;
-    memcpy(head->VmBoard, chessboard, sizeof(chessboard));
+    memcpy(head->board_tmp, chessboard, sizeof(chessboard));
     head->depth = 0;
     head->self = self;
     head->cnt = 0;
@@ -1412,9 +1412,9 @@ Game::Node_Tree *Game::createleaf(Node_Tree *p)  {
     tmp->self = -p->self;
     tmp->Alpha=p->Alpha;
     tmp->Beta=p->Beta;
-    memcpy(tmp->VmBoard, p->VmBoard, sizeof(p->VmBoard));
-    tmp->VmBoard[p->site[p->cnt].Y][p->site[p->cnt].X] = p->self;
-    if (chessjudge(p->site[p->cnt].Y, p->site[p->cnt].X, tmp->VmBoard)) {
+    memcpy(tmp->board_tmp, p->board_tmp, sizeof(p->board_tmp));
+    tmp->board_tmp[p->site[p->cnt].Y][p->site[p->cnt].X] = p->self;
+    if (chessjudge(p->site[p->cnt].Y, p->site[p->cnt].X, tmp->board_tmp)) {
         if (tmp->depth % 2 == 0) {
             p->cnt++;
             tmp->Alpha = AllScore(tmp);
@@ -1437,10 +1437,10 @@ void Game::PrintScore(Node_Tree *p) {
     int num=0;
     for (int i = 1; i <= 15; i++) {
         for (int j = 1; j <= 15; j++) {
-            if (p->VmBoard[i][j] == 0) {
+            if (p->board_tmp[i][j] == 0) {
                 num++;
-                Attack(i, j,-p->self, p->VmBoard,scoreboard);
-                Attack(i, j,p->self, p->VmBoard,scoreboard);
+                Attack(i, j,-p->self, p->board_tmp,scoreboard);
+                Attack(i, j,p->self, p->board_tmp,scoreboard);
                 if (scoreboard[i][j]<50){
                     num--;
                 }
